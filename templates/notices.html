@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Society Notices</title>
+</head>
+<body>
+
+    <nav>
+        <a href="/dashboard">🏠 Dashboard</a>
+        <a href="/bills">💰 Bills</a>
+        <a href="/notices" class="active">📢 Notices</a>
+        <a href="/residents">🏢 Residents</a>
+        <a href="/complaints">📝 Complaints</a>
+        <a href="/profile">👤 Profile</a>
+        <a href="/logout" class="btn-premium" style="color: red;">Logout</a>
+    </nav>
+
+    <div class="page-hero">
+        <h1>Society Notices</h1>
+        <p>Stay updated with announcements, community news, and urgent alerts.</p>
+    </div>
+
+    <div class="page-main">
+        <div style="display: grid; gap: 15px; margin-bottom: 40px;">
+            {% for notice in notices %}
+            <div class="building-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <div>
+                        <h3 style="color: #2c3e50; margin: 0;">{{ notice.title }}</h3>
+                        <p style="color: #999; font-size: 0.85rem; margin: 5px 0 0 0;">{{ notice.date }}</p>
+                    </div>
+                    <a href="/action/view_notices" class="button-link" style="background: #3498db; color: white; margin-left: auto;">View Details</a>
+                </div>
+                <p style="color: #666; line-height: 1.6;">{{ notice.content }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="building-card" style="border-left: 4px solid #27ae60; margin-bottom: 40px;">
+            <h2 style="margin-top: 0; color: #2c3e50;">📌 Stay Connected</h2>
+            <p style="color: #666; line-height: 1.6;">Subscribe to notice alerts and receive timely updates for maintenance, security alerts, community events, and emergency announcements.</p>
+            <a href="/action/subscribe_notices" class="button-link" style="background: #27ae60; color: white;">Subscribe to Alerts</a>
+        </div>
+
+        <div class="building-card" style="background: rgba(52, 152, 219, 0.08); border-left: 4px solid #3498db;">
+            <h2 style="margin-top: 0; color: #2c3e50;">📅 Upcoming Community Events</h2>
+            <ul style="color: #666; line-height: 1.8; margin: 0; padding-left: 20px;">
+                <li>Society Annual Fest on 20 May 2026</li>
+                <li>Monthly meeting in Community Hall on 12 May 2026</li>
+                <li>Water conservation workshop on 23 May 2026</li>
+            </ul>
+        </div>
+    </div>
+
+
+</body>
+</html>

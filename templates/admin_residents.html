@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Manage Residents - Admin</title>
+</head>
+<body class="admin-theme">
+    <nav class="admin-nav">
+        <a href="/dashboard">🏠 Resident View</a>
+        <a href="/admin_dashboard">📊 Dashboard</a>
+        <a href="/admin_login_history">🔐 Login History</a>
+        <a href="/admin_notices">📢 Notices</a>
+        <a href="/admin_bills">💰 Bills</a>
+        <a href="/admin_complaints">📝 Complaints</a>
+        <a href="/admin_buildings">🏢 Buildings</a>
+        <a href="/admin_residents" class="active">👥 Residents</a>
+        <a href="/logout" class="btn-premium" style="color: red;">Logout</a>
+    </nav>
+
+    <div class="page-hero">
+        <h1>Resident Management</h1>
+        <p>Add, reassign, or remove residents and assign flats directly.</p>
+    </div>
+
+    <div class="page-main" style="max-width: 1100px;">
+        <div class="building-card">
+            <h2>Add New Resident</h2>
+            <form action="/admin_residents" method="POST" style="display: grid; gap: 18px;">
+                <input type="hidden" name="action" value="add">
+                <input type="text" name="name" placeholder="Resident Name" required class="input-card">
+                <select name="building" required class="input-card">
+                    <option value="">Select Building</option>
+                    {% for building in buildings %}
+                    <option value="{{ building.name }}">{{ building.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" name="flat" placeholder="Flat Number" required class="input-card">
+                <input type="text" name="contact" placeholder="Contact Number" required class="input-card">
+                <button type="submit" class="btn-premium" style="width: 220px;">Add Resident</button>
+            </form>
+        </div>
+
+        <div class="building-card">
+            <h2>Active Residents ({{ residents|length }})</h2>
+            <div style="display: grid; gap: 18px; margin-top: 20px;">
+                {% for resident in residents %}
+                <div class="admin-card-grid">
+                    <div>
+                        <h3>{{ resident.name }}</h3>
+                        <p><strong>ID:</strong> {{ resident.id }} | <strong>Flat:</strong> {{ resident.flat }}</p>
+                        <p><strong>Building:</strong> {{ resident.building }} | <strong>Contact:</strong> {{ resident.contact }}</p>
+                    </div>
+                    <form action="/admin_residents" method="POST" style="display: inline; align-self: center;">
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="id" value="{{ resident.id }}">
+                        <button type="submit" class="btn-premium" style="width: 160px; background: #e74c3c;">Remove Resident</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

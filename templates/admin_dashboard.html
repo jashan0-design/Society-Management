@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Admin Dashboard</title>
+</head>
+<body class="admin-theme">
+    <nav class="admin-nav">
+        <a href="/dashboard">🏠 Back to Resident View</a>
+        <a href="/admin_dashboard" class="active">📊 Admin Dashboard</a>
+        <a href="/admin_login_history">🔐 Login History</a>
+        <a href="/admin_notices">📢 Notices</a>
+        <a href="/admin_bills">💰 Bills</a>
+        <a href="/admin_complaints">📝 Complaints</a>
+        <a href="/admin_buildings">🏢 Buildings</a>
+        <a href="/admin_residents">👥 Residents</a>
+        <a href="/logout" class="btn-premium" style="color: red;">Logout</a>
+    </nav>
+
+    <div class="page-hero">
+        <h1>Admin Control Panel</h1>
+        <p>Complete management suite for Elite Society Hub</p>
+    </div>
+
+    <div class="page-main">
+        <div class="dashboard-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px;">
+            <div class="stat-card" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; text-align: center; padding: 30px; border-radius: 20px;">
+                <div style="font-size: 3rem; font-weight: bold;">{{ statistics.total_residents }}</div>
+                <div>Total Residents</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #f39c12, #e67e22); color: white; text-align: center; padding: 30px; border-radius: 20px;">
+                <div style="font-size: 3rem; font-weight: bold;">{{ statistics.pending_complaints }}</div>
+                <div>Pending Complaints</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; text-align: center; padding: 30px; border-radius: 20px;">
+                <div style="font-size: 3rem; font-weight: bold;">{{ statistics.pending_bills }}</div>
+                <div>Pending Bills</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #27ae60, #229954); color: white; text-align: center; padding: 30px; border-radius: 20px;">
+                <div style="font-size: 3rem; font-weight: bold;">{{ statistics.total_notices }}</div>
+                <div>Total Notices</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #4b5563, #1f2937); color: white; text-align: center; padding: 30px; border-radius: 20px;">
+                <div style="font-size: 3rem; font-weight: bold;">{{ statistics.total_buildings }}</div>
+                <div>Total Buildings</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-top: 40px;">
+            <div class="building-card">
+                <h3>🚀 Quick Actions</h3>
+                <div style="display: grid; gap: 15px;">
+                    <a href="/admin_notices" class="button-link">Add New Notice</a>
+                    <a href="/admin_bills" class="button-link">Generate Bills</a>
+                    <a href="/admin_complaints" class="button-link">View Complaints</a>
+                    <a href="/admin_buildings" class="button-link">Update Buildings</a>
+                </div>
+            </div>
+            <div class="building-card">
+                <h3>📈 Recent Activity</h3>
+                <ul style="padding-left: 20px; color: #666;">
+                    <li>New complaint filed 2 hours ago</li>
+                    <li>Water bill payment received</li>
+                    <li>Maintenance notice published</li>
+                    <li>Resident profile updated</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

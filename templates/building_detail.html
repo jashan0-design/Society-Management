@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{{ building.name }} - Elite Society Hub</title>
+    <style>
+        .detail-hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 50px 30px; border-radius: 20px; margin: 40px 20px; text-align: center; }
+        .detail-main { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; margin-bottom: 40px; }
+        .detail-card { background: rgba(255,255,255,0.95); border-radius: 20px; padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .floor-plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .resident-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .maintenance-list { max-height: 400px; overflow-y: auto; }
+        .back-link { display: inline-flex; align-items: center; gap: 10px; color: #3498db; text-decoration: none; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">🏠 Dashboard</a>
+        <a href="/bills">💰 Bills</a>
+        <a href="/notices">📢 Notices</a>
+        <a href="/residents" class="active">🏢 Residents</a>
+        <a href="/complaints">📝 Complaints</a>
+        <a href="/profile">👤 Profile</a>
+        <a href="/logout" class="btn-premium" style="color: red;">Logout</a>
+    </nav>
+
+    <div class="detail-hero">
+        <h1>{{ building.name }}</h1>
+        <p>{{ building.description }}</p>
+        <div style="display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; margin-top: 20px; font-size: 1.1rem;">
+            <span>{{ building.floors }} Floors</span>
+            <span>{{ building.flats }} Flats</span>
+            <span>{{ building.occupancy }} Occupancy</span>
+            <span>{{ building.residents }} Residents</span>
+        </div>
+    </div>
+
+    <div class="detail-main">
+        <a href="/residents" class="back-link">← Back to Residences</a>
+
+        <div class="detail-grid">
+            <!-- Amenities -->
+            <div class="detail-card">
+                <h2>🏊 Amenities</h2>
+                <ul style="list-style: none; padding: 0;">
+                    {% for amenity in building.amenities %}
+                    <li style="background: rgba(52,152,219,0.1); padding: 12px 18px; border-radius: 12px; margin-bottom: 10px; border-left: 4px solid #3498db;">
+                        {{ amenity }}
+                    </li>
+                    {% endfor %}
+                </ul>
+                <p style="margin-top: 20px; color: #666;"><strong>Building Manager:</strong> {{ building.manager }}</p>
+            </div>
+
+            <!-- Floor Plans -->
+            <div class="detail-card">
+                <h2>📐 Floor Plans</h2>
+                <div class="floor-plan-grid">
+                    {% for plan in floor_plans %}
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; text-align: center;">
+                        <h4 style="margin: 0 0 10px 0; color: #2c3e50;">{{ plan.floor }}</h4>
+                        <p><strong>{{ plan.flats }} Flats</strong> | Vacant: {{ plan.vacant }}</p>
+                        <p style="color: #666; font-size: 0.9rem;">{{ plan.amenities | join(', ') }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-grid">
+            <!-- Sample Residents -->
+            <div class="detail-card">
+                <h2>👥 Sample Residents</h2>
+                <div class="resident-grid">
+                    {% for resident in sample_residents %}
+                    <div style="display: flex; gap: 15px; padding: 15px; background: #f8f9fa; border-radius: 12px;">
+                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">R</div>
+                        <div>
+                            <p style="margin: 0; font-weight: 600; color: #2c3e50;">{{ resident.name }}</p>
+                            <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">Flat {{ resident.flat }} | {{ resident.family_size }} members</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a href="#" style="display: block; text-align: center; margin-top: 20px; color: #3498db;">View All Residents</a>
+            </div>
+
+            <!-- Maintenance History -->
+            <div class="detail-card">
+                <h2>🔧 Maintenance History</h2>
+                <div class="maintenance-list">
+                    {% for ticket in maintenance_tickets %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8f9fa; border-radius: 12px; margin-bottom: 10px;">
+                        <div>
+                            <p style="margin: 0; font-weight: 600;">{{ ticket.issue }}</p>
+                            <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">{{ ticket.date }}</p>
+                        </div>
+                        <span class="ticket-status {{ 'ticket-resolved' if ticket.status == 'Resolved' else 'ticket-pending' if ticket.status == 'Pending' else 'ticket-other' }}">{{ ticket.status }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

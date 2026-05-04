@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Complaints & Tracking</title>
+</head>
+<body>
+
+    <nav>
+        <a href="/dashboard">🏠 Dashboard</a>
+        <a href="/bills">💰 Bills</a>
+        <a href="/notices">📢 Notices</a>
+        <a href="/residents">🏢 Residents</a>
+        <a href="/complaints" class="active">📝 Complaints</a>
+        <a href="/profile">👤 Profile</a>
+        <a href="/logout" class="btn-premium" style="color: red;">Logout</a>
+    </nav>
+
+    <div class="page-hero">
+        <h1>Complaints & Tracking</h1>
+        <p>Report issues and track their resolution with transparent status updates.</p>
+    </div>
+
+    <div class="page-main">
+        <div class="building-card" style="margin-bottom: 25px;">
+            <h2 style="color: #2c3e50;">File a New Complaint</h2>
+            {% if ticket %}
+                <div style="background: #d4edda; color: #155724; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <strong>Complaint Filed!</strong><br>
+                    Your Tracking ID: <b style="font-size: 1.2rem;">{{ ticket }}</b>
+                </div>
+                <a href="/complaints" class="button-link">File Another</a>
+            {% else %}
+                <form action="/complaints" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+                    <textarea name="description" placeholder="Describe the issue (e.g., Lift not working in Wing B)..." 
+                              required style="height: 100px; padding: 15px; border-radius: 12px; border: 1px solid #ddd;"></textarea>
+                    <button type="submit" class="btn-premium">Submit</button>
+                </form>
+            {% endif %}
+        </div>
+
+        <div class="building-card" style="margin-bottom: 35px;">
+            <h2 style="color: #2c3e50;">Track Status</h2>
+            <p style="font-size: 0.9rem; color: #666;">Enter your SOC-XXXXXX ID below</p>
+            <form action="/complaints" method="POST" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                <input type="text" name="track_id" placeholder="e.g. SOC-VBNQJH" required 
+                       style="flex: 1; min-width: 280px; padding: 12px; border-radius: 10px; border: 1px solid #ddd;">
+                <button type="submit" class="btn-premium" style="padding: 10px;">Track</button>
+            </form>
+            {% if status_message %}
+                <div style="background: #e3f2fd; color: #0d47a1; padding: 15px; border-radius: 10px; border: 1px solid #bbdefb;">
+                    <strong>Status:</strong> {{ status_message }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="building-card" style="margin-bottom: 40px;">
+            <h2 style="color: #2c3e50; margin-top: 0;">🚨 Emergency Reporting</h2>
+            <p style="color: #666; line-height: 1.6;">If you need immediate assistance, report urgent issues to the management team now.</p>
+            <a href="/action/emergency_report" class="button-link" style="background: #e74c3c; color: white;">Report Emergency Issue</a>
+        </div>
+
+        <!-- FAQ Section -->
+        <h2 style="color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 30px;">❓ Frequently Asked Questions</h2>
+        <div style="display: grid; gap: 15px; margin-bottom: 40px;">
+            <div class="building-card">
+                <h4 style="color: #2c3e50; margin-top: 0;">How long does it take to resolve a complaint?</h4>
+                <p style="color: #666; line-height: 1.6;">Complaints are typically resolved within 7-10 business days. Urgent issues like water/electricity outages are given priority and resolved within 24 hours.</p>
+            </div>
+            <div class="building-card">
+                <h4 style="color: #2c3e50; margin-top: 0;">How do I track my complaint status?</h4>
+                <p style="color: #666; line-height: 1.6;">Use the "Track Status" section above. Enter your SOC-XXXXXX ID to get real-time updates on your complaint.</p>
+            </div>
+            <div class="building-card">
+                <h4 style="color: #2c3e50; margin-top: 0;">Can I withdraw a complaint?</h4>
+                <p style="color: #666; line-height: 1.6;">Yes, complaints can be withdrawn within 24 hours of filing. After that, please contact the office directly.</p>
+            </div>
+            <div class="building-card">
+                <h4 style="color: #2c3e50; margin-top: 0;">Who should I contact for emergency issues?</h4>
+                <p style="color: #666; line-height: 1.6;">For emergencies, contact the office at +91-9876543210 or visit the office during business hours (9 AM - 6 PM).</p>
+            </div>
+        </div>
+
+        <!-- Recent Complaints -->
+        <h2 style="color: #2c3e50; text-align: center; border-bottom: 2px solid #27ae60; padding-bottom: 10px; margin-bottom: 30px;">📋 Your Recent Complaints</h2>
+        <div style="display: grid; gap: 15px; margin-bottom: 40px;">
+            <div class="building-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <div>
+                        <h4 style="margin: 0; color: #2c3e50;">SOC-XYZ789 - Lift Maintenance</h4>
+                        <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">Filed: 25 April 2026 | Wing A</p>
+                    </div>
+                    <span style="background: #27ae60; color: white; padding: 5px 12px; border-radius: 15px; font-size: 0.8rem;">Resolved</span>
+                </div>
+                <p style="color: #666; margin: 10px 0; font-size: 0.95rem;">Lift was not functioning properly. Issue has been fixed by our maintenance team.</p>
+            </div>
+            <div class="building-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <div>
+                        <h4 style="margin: 0; color: #2c3e50;">SOC-ABCD12 - Water Leakage</h4>
+                        <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">Filed: 20 April 2026 | Wing B, 3rd Floor</p>
+                    </div>
+                    <span style="background: #3498db; color: white; padding: 5px 12px; border-radius: 15px; font-size: 0.8rem;">In Progress</span>
+                </div>
+                <p style="color: #666; margin: 10px 0; font-size: 0.95rem;">Water leakage from the apartment above. Our team has inspected and repair work is underway.</p>
+            </div>
+            <div class="building-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                    <div>
+                        <h4 style="margin: 0; color: #2c3e50;">SOC-EFGH34 - Street Light Issue</h4>
+                        <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">Filed: 1 May 2026 | Main Gate Area</p>
+                    </div>
+                    <span style="background: #f39c12; color: white; padding: 5px 12px; border-radius: 15px; font-size: 0.8rem;">Pending</span>
+                </div>
+                <p style="color: #666; margin: 10px 0; font-size: 0.95rem;">Street light near main gate is not working. Scheduled for repair on 5 May 2026.</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 50px 0;">
+            <a href="/dashboard" class="button-link" style="background: transparent; color: #3498db; box-shadow: none;">← Back to Dashboard</a>
+        </div>
+    </div>
+
+</body>
+</html>

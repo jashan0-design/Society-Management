@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Login - Elite Society</title>
+</head>
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+
+        <div class="building-card" style="width: 450px; padding: 40px;">
+        <div style="font-size: 50px; margin-bottom: 10px;">🛡️</div>
+        <h2 style="margin-bottom: 5px; color: #2c3e50;">Elite Society Login</h2>
+        <p style="color: #7f8c8d; margin-bottom: 30px; font-size: 0.9rem;">Choose your login type below.</p>
+        
+        <!-- Resident Login -->
+        <div style="background: #f8f9fa; padding: 25px; border-radius: 15px; margin-bottom: 20px; border-left: 4px solid #3498db;">
+            <h3 style="margin: 0 0 15px 0; color: #2c3e50; font-size: 1.2rem;">🏠 Resident Login</h3>
+            <form action="/login" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="hidden" name="user_type" value="resident">
+                <div>
+                    <input type="text" name="username" placeholder="Username (admin)" required 
+                           style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; background: #fff;">
+                </div>
+                <div>
+                    <input type="password" name="password" placeholder="Password (1234)" required 
+                           style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; background: #fff;">
+                </div>
+                <button type="submit" class="btn-premium" style="width: 100%; background: linear-gradient(135deg, #3498db, #2980b9); color: white;">
+                    Resident Login
+                </button>
+            </form>
+        </div>
+        
+        <!-- Admin Login -->
+        <div style="background: #fff3cd; padding: 25px; border-radius: 15px; border-left: 4px solid #f39c12;">
+            <h3 style="margin: 0 0 15px 0; color: #2c3e50; font-size: 1.2rem;">⚙️ Admin Login</h3>
+            <form action="/login" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="hidden" name="user_type" value="admin">
+                <div>
+                    <input type="text" name="username" placeholder="Username (jashan)" required 
+                           style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; background: #fff;">
+                </div>
+                <div>
+                    <input type="password" name="password" placeholder="Password (1234)" required 
+                           style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; background: #fff;">
+                </div>
+                <button type="submit" class="btn-premium" style="width: 100%; background: linear-gradient(135deg, #f39c12, #e67e22); color: white;">
+                    Admin Login
+                </button>
+            </form>
+        </div>
+
+        <div style="margin-top: 25px; font-size: 0.85rem; border-top: 1px solid #eee; padding-top: 20px;">
+            <a href="/reset_password" style="color:#3498db; text-decoration: none; font-weight: 500;">Forgot Password?</a>
+            <p style="margin-top: 10px; color: #888;">New Resident? <a href="/complaints" style="color: #3498db; text-decoration: none; font-weight: 600;">Request Access</a></p>
+        </div>
+    </div>
+
+</body>
+</html>

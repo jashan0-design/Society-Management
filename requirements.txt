@@ -1,0 +1,7 @@
+Flask
+Flask-SQLAlchemy
+pymongo[srv]
+flask-login
+flask-mail
+gunicorn
+psycopg2-binary

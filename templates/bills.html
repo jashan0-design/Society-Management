@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Bills & Payments</title>
+</head>
+<body>
+
+    <nav>
+        <a href="/dashboard">🏠 Dashboard</a>
+        <a href="/bills" class="active">💰 Bills</a>
+        <a href="/notices">📢 Notices</a>
+        <a href="/residents">🏢 Residents</a>
+        <a href="/complaints">📝 Complaints</a>
+        <a href="/profile">👤 Profile</a>
+        <a href="/logout" class="btn-premium" style="color: red;">Logout</a>
+    </nav>
+
+    <div class="page-hero">
+        <h1>Society Bills</h1>
+        <p>Pay your current utility bills and review recent payment history.</p>
+    </div>
+
+    <div class="page-main">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="page-section">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ 'flash-success' if category == 'success' else 'flash-error' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="page-section">
+        <!-- Unpaid Bills -->
+        <div style="margin-bottom: 40px;">
+            <h2 style="color: #2c3e50; border-bottom: 2px solid #e74c3c; padding-bottom: 10px;">⚠️ Unpaid Bills</h2>
+            <div style="display: grid; gap: 20px;">
+                {% if unpaid_bills %}
+                    {% for bill in unpaid_bills %}
+                    <div class="building-card" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="color: #2c3e50; margin: 0;">{{ '💧' if 'Water' in bill.type else '⚡' }} {{ bill.type }} - May 2026</h3>
+                            <p style="margin: 5px 0; color: #666;">Due: {{ bill.due_date }} | Unit: A-102</p>
+                            <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">{{ bill.details }}</p>
+                            <span style="background: #f39c12; color: white; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem;">{{ bill.status }}</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.8rem; font-weight: bold; color: #e74c3c;">{{ bill.amount }}</div>
+                            <a href="/pay_bill/{{ bill.id }}" class="button-link" style="margin-top: 10px; background: #e74c3c; color: white;">Pay</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="building-card" style="text-align: center; padding: 40px;">
+                        <p style="margin: 0; color: #666;">Great news — there are no unpaid bills right now.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Payment History -->
+        <div style="margin-bottom: 40px;">
+            <h2 style="color: #2c3e50; border-bottom: 2px solid #27ae60; padding-bottom: 10px;">✓ Payment History</h2>
+            <div style="display: grid; gap: 15px;">
+                {% if paid_bills %}
+                    {% for bill in paid_bills %}
+                    <div class="building-card" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="margin: 0; color: #2c3e50;">{{ bill.type }} - {{ bill.paid_date }}</h4>
+                            <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">Amount: {{ bill.amount }} | Ref: {{ bill.payment_reference }}</p>
+                        </div>
+                        <span style="background: #27ae60; color: white; padding: 8px 15px; border-radius: 15px; font-size: 0.85rem;">✓ Paid</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="building-card" style="text-align: center; padding: 40px;">
+                        <p style="margin: 0; color: #666;">No payments have been recorded yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Bill Summary -->
+        <div style="background: rgba(52, 152, 219, 0.1); padding: 20px; border-radius: 12px; border-left: 4px solid #3498db;">
+            <h3 style="color: #2c3e50; margin-top: 0;">📊 Bill Summary</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div>
+                    <p style="color: #666; margin: 0 0 5px 0;">Total Outstanding</p>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #e74c3c;">₹{{ '{:,}'.format(total_outstanding) }}</div>
+                </div>
+                <div>
+                    <p style="color: #666; margin: 0 0 5px 0;">Total Paid (YTD)</p>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #27ae60;">₹{{ '{:,}'.format(total_paid) }}</div>
+                </div>
+                <div>
+                    <p style="color: #666; margin: 0 0 5px 0;">Average Monthly Bill</p>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #3498db;">₹{{ '{:,}'.format(average_bill) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

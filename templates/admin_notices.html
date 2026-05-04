@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Manage Notices - Admin</title>
+</head>
+<body class="admin-theme">
+    <nav class="admin-nav">
+        <a href="/dashboard">🏠 Resident View</a>
+        <a href="/admin_dashboard">📊 Dashboard</a>
+        <a href="/admin_login_history">🔐 Login History</a>
+        <a href="/admin_notices" class="active">📢 Notices</a>
+        <a href="/admin_bills">💰 Bills</a>
+        <a href="/admin_complaints">📝 Complaints</a>
+        <a href="/admin_buildings">🏢 Buildings</a>
+        <a href="/admin_residents">👥 Residents</a>
+        <a href="/logout" class="btn-premium" style="color: red;">Logout</a>
+    </nav>
+
+    <div class="page-hero">
+        <h1>Manage Notices</h1>
+        <p>Create, edit, and publish society announcements</p>
+    </div>
+
+    <div class="page-main" style="max-width: 1000px;">
+        <!-- Add New Notice Form -->
+        <div class="building-card">
+            <h2>Add New Notice</h2>
+            <form action="/admin_notices" method="POST" style="display: grid; gap: 20px;">
+                <input type="hidden" name="action" value="add">
+                <input type="text" name="title" placeholder="Notice Title" required style="padding: 15px; border-radius: 12px; border: 1px solid #ddd;">
+                <input type="date" name="date" required style="padding: 15px; border-radius: 12px; border: 1px solid #ddd;">
+                <textarea name="content" placeholder="Notice Content" required rows="5" style="padding: 15px; border-radius: 12px; border: 1px solid #ddd; resize: vertical;"></textarea>
+                <button type="submit" class="btn-premium" style="background: #27ae60; color: white; width: 200px;">Publish Notice</button>
+            </form>
+        </div>
+
+        <!-- Existing Notices -->
+        <div class="building-card">
+            <h2>Published Notices ({{ notices|length }})</h2>
+            <div style="display: grid; gap: 20px; margin-top: 20px;">
+                {% for notice in notices %}
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; padding: 20px; background: #f8f9fa; border-radius: 15px;">
+                    <div>
+                        <h4 style="margin: 0; color: #2c3e50;">{{ notice.title }}</h4>
+                        <p style="margin: 5px 0; color: #666;">{{ notice.date }}</p>
+                        <p style="margin: 10px 0 0 0; color: #555;">{{ notice.content[:100] }}...</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <form action="/admin_notices" method="POST" style="display: inline;">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="title" value="{{ notice.title }}">
+                            <button type="submit" style="background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-right: 10px;" onclick="return confirm('Delete this notice?')">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

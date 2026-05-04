@@ -1,0 +1,11 @@
+[build]
+  builder = "NIXPACKS"
+
+[deploy]
+  startCommand = "gunicorn app:app"
+
+[db.PostgreSQL]
+  [db.PostgreSQL.variables]
+    DATABASE_URL = "postgres://..."
+
+# Note: Update DATABASE_URL from Railway dashboard

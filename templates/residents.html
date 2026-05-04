@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Resident Towers</title>
+</head>
+<body>
+
+    <nav>
+        <a href="/dashboard">🏠 Dashboard</a>
+        <a href="/bills">💰 Bills</a>
+        <a href="/notices">📢 Notices</a>
+        <a href="/complaints">📝 Complaints</a>
+        <a href="/residents" class="active">🏢 Residents</a>
+        <a href="/profile">👤 Profile</a>
+        <a href="/logout" class="btn-premium" style="color: red;">Logout</a>
+    </nav>
+
+    <div class="page-hero">
+        <h1>Resident Towers</h1>
+        <p>Explore your buildings in a bold 3D-inspired interface with instant floor, flat, and occupancy details.</p>
+    </div>
+
+    <div class="page-main">
+        <section class="page-section">
+            <div class="section-header premium-header">
+                <div class="premium-pill">Premium Insight</div>
+                <h2>Exclusive Building Portfolio</h2>
+                <p>Explore your society’s most elegant towers with upgraded mansion-style analytics, guest-friendly layouts, and occupancy intelligence.</p>
+            </div>
+
+            <div class="residents-grid">
+                <div class="building-grid">
+                    {% for building in buildings %}
+                    <button type="button" class="building-card-3d{% if loop.first %} active{% endif %}" data-name="{{ building.name }}" data-floors="{{ building.floors }}" data-flats="{{ building.flats }}" data-occupancy="{{ building.occupancy }}" data-residents="{{ building.residents }}" data-description="{{ building.description }}" data-url="/building/{{ building.name.replace(' ', '-') }}">
+                        <div class="building-art">🏙️</div>
+                        <h3>{{ building.name }}</h3>
+                        <p>{{ building.description }}</p>
+                        <div class="building-meta">
+                            <span>Floors</span>
+                            <strong>{{ building.floors }}</strong>
+                            <span>Flats</span>
+                            <strong>{{ building.flats }}</strong>
+                        </div>
+                    </button>
+                    {% endfor %}
+                </div>
+
+                <div class="building-detail-panel">
+                    <div class="tower-preview-card">
+                        <div class="tower-3d-preview">
+                            <div class="tower-scene" id="tower-scene"></div>
+                            <div class="tower-base"></div>
+                        </div>
+                        <h4 id="selected-building-title">{{ buildings[0].name }}</h4>
+                        <p class="muted" id="selected-building-summary">{{ buildings[0].description }}</p>
+                        <div class="tower-labels">
+                            <div class="tower-label">
+                                <strong id="selected-building-floors">{{ buildings[0].floors }}</strong>
+                                <span>Total Floors</span>
+                            </div>
+                            <div class="tower-label">
+                                <strong id="selected-building-flats">{{ buildings[0].flats }}</strong>
+                                <span>Total Flats</span>
+                            </div>
+                            <div class="tower-label">
+                                <strong id="selected-building-occupancy">{{ buildings[0].occupancy }}</strong>
+                                <span>Occupancy</span>
+                            </div>
+                            <div class="tower-label">
+                                <strong id="selected-building-residents">{{ buildings[0].residents }}</strong>
+                                <span>Residents</span>
+                            </div>
+                        </div>
+                        <a href="/building/{{ buildings[0].name.replace(' ', '-') }}" class="button-link" style="width: 100%; margin-top: 20px;">View Full Building Details</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const buildingButtons = document.querySelectorAll('.building-card-3d');
+        const selectedTitle = document.getElementById('selected-building-title');
+        const selectedSummary = document.getElementById('selected-building-summary');
+        const selectedFloors = document.getElementById('selected-building-floors');
+        const selectedFlats = document.getElementById('selected-building-flats');
+        const selectedOccupancy = document.getElementById('selected-building-occupancy');
+        const selectedResidents = document.getElementById('selected-building-residents');
+        const towerScene = document.getElementById('tower-scene');
+
+        function buildTower(floors) {
+            towerScene.innerHTML = '';
+            const count = Math.max(3, Math.min(8, parseInt(floors, 10)));
+            for (let i = 0; i < count; i++) {
+                const floor = document.createElement('div');
+                floor.className = 'tower-floor';
+                floor.style.setProperty('--index', count - i);
+                towerScene.appendChild(floor);
+            }
+        }
+
+        buildingButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                buildingButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                selectedTitle.textContent = button.dataset.name;
+                selectedSummary.textContent = button.dataset.description;
+                selectedFloors.textContent = button.dataset.floors;
+                selectedFlats.textContent = button.dataset.flats;
+                selectedOccupancy.textContent = button.dataset.occupancy;
+                selectedResidents.textContent = button.dataset.residents;
+                buildTower(button.dataset.floors);
+                
+                // Update detail link
+                const detailUrl = button.dataset.url;
+                if (detailUrl) {
+                    window.location.href = detailUrl;
+                    return;
+                }
+            });
+        });
+
+        if (buildingButtons.length) {
+            buildTower(buildingButtons[0].dataset.floors);
+        }
+    </script>
+
+</body>
+</html>

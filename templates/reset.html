@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Reset Password</title>
+</head>
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+
+    <div class="building-card" style="width: 350px;">
+        <h2>Reset Password</h2>
+        <p>Enter your registered email address.</p>
+        <form action="/reset_password" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+            <input type="email" name="email" placeholder="Email Address" required style="padding: 12px; border-radius: 10px; border: 1px solid #ddd;">
+            <button type="submit" class="btn-premium">Reset</button>
+        </form>
+    </div>
+
+</body>
+</html>

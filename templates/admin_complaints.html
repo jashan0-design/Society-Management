@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Manage Complaints - Admin</title>
+</head>
+<body class="admin-theme">
+    <nav class="admin-nav">
+        <a href="/dashboard">🏠 Resident View</a>
+        <a href="/admin_dashboard">📊 Dashboard</a>
+        <a href="/admin_login_history">🔐 Login History</a>
+        <a href="/admin_notices">📢 Notices</a>
+        <a href="/admin_bills">💰 Bills</a>
+        <a href="/admin_complaints" class="active">📝 Complaints</a>
+        <a href="/admin_buildings">🏢 Buildings</a>
+        <a href="/admin_residents">👥 Residents</a>
+        <a href="/logout" class="btn-premium" style="color: red;">Logout</a>
+    </nav>
+
+    <div class="page-hero">
+        <h1>Complaint Center</h1>
+        <p>Review resident complaints and resolve issues immediately.</p>
+    </div>
+
+    <div class="page-main" style="max-width: 1100px;">
+        <div class="building-card">
+            <h2>Resident Complaints</h2>
+            {% if complaints %}
+            <div style="display: grid; gap: 18px; margin-top: 20px;">
+                {% for complaint in complaints %}
+                <div class="admin-card-grid">
+                    <div>
+                        <h3>{{ complaint.id }}</h3>
+                        <p>{{ complaint.description }}</p>
+                        <p><strong>Filed:</strong> {{ complaint.date }} | <strong>Status:</strong>
+                            <span class="status-pill {{ 'status-paid' if complaint.status == 'Resolved' else 'status-pending' }}">{{ complaint.status }}</span>
+                        </p>
+                    </div>
+                    <div style="display: grid; gap: 10px; align-items: center;">
+                        {% if complaint.status != 'Resolved' %}
+                        <form action="/admin_complaints" method="POST" style="display: inline;">
+                            <input type="hidden" name="action" value="resolve">
+                            <input type="hidden" name="id" value="{{ complaint.id }}">
+                            <button type="submit" class="btn-premium" style="width: 180px;">Mark Resolved</button>
+                        </form>
+                        {% endif %}
+                        <form action="/admin_complaints" method="POST" style="display: inline;">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="id" value="{{ complaint.id }}">
+                            <button type="submit" class="btn-premium" style="width: 180px; background: #e74c3c;">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="color: #c4c9ff; margin-top: 20px;">No complaints have been filed yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

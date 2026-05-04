@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Pay Bill - Elite Society Hub</title>
+</head>
+<body>
+
+    <nav>
+        <a href="/dashboard">🏠 Dashboard</a>
+        <a href="/bills" class="active">💰 Bills</a>
+        <a href="/notices">📢 Notices</a>
+        <a href="/residents">🏢 Residents</a>
+        <a href="/complaints">📝 Complaints</a>
+        <a href="/profile">👤 Profile</a>
+        <a href="/logout" class="btn-premium" style="color: red;">Logout</a>
+    </nav>
+
+    <div class="page-hero">
+        <h1>Pay {{ bill.type }}</h1>
+        <p>Enter your payment details below to complete the transaction.</p>
+    </div>
+
+    <div class="page-main">
+        <div class="page-section" style="max-width: 900px; margin: 0 auto;">
+            <div class="building-card" style="padding: 30px;">
+                <h2 style="margin-top: 0; color: #2c3e50;">Payment Details</h2>
+                <p style="color: #666; margin-bottom: 20px;">Bill Amount: <strong>{{ bill.amount }}</strong> | Due Date: <strong>{{ bill.due_date }}</strong></p>
+                <form action="/pay_bill/{{ bill.id }}" method="POST" style="display: grid; gap: 18px;">
+                    <label style="display: grid; gap: 8px; font-weight: 600; color: #2c3e50;">
+                        Account Holder Name
+                        <input type="text" name="account_holder" required placeholder="Enter account holder name" style="padding: 13px; border-radius: 12px; border: 1px solid #ddd;" />
+                    </label>
+                    <label style="display: grid; gap: 8px; font-weight: 600; color: #2c3e50;">
+                        Account Number
+                        <input type="text" name="account_number" required placeholder="Enter account number" style="padding: 13px; border-radius: 12px; border: 1px solid #ddd;" />
+                    </label>
+                    <label style="display: grid; gap: 8px; font-weight: 600; color: #2c3e50;">
+                        IFSC Code
+                        <input type="text" name="ifsc_code" required placeholder="Enter IFSC code" style="padding: 13px; border-radius: 12px; border: 1px solid #ddd; text-transform: uppercase;" />
+                    </label>
+                    <label style="display: grid; gap: 8px; font-weight: 600; color: #2c3e50;">
+                        Payment Mode
+                        <select name="payment_mode" style="padding: 13px; border-radius: 12px; border: 1px solid #ddd;">
+                            <option>Net Banking</option>
+                            <option>UPI</option>
+                            <option>Debit/Credit Card</option>
+                            <option>Wallet</option>
+                        </select>
+                    </label>
+                    <label style="display: grid; gap: 8px; font-weight: 600; color: #2c3e50;">
+                        Amount
+                        <input type="text" name="amount" required value="{{ bill.amount }}" readonly style="padding: 13px; border-radius: 12px; border: 1px solid #ddd; background: #f5f7fb;" />
+                    </label>
+                    <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: flex-end;">
+                        <a href="/bills" class="button-link" style="background: transparent; color: #3498db; box-shadow: none;">Cancel</a>
+                        <button type="submit" class="btn-premium" style="background: #27ae60; color: white;">Pay Now</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

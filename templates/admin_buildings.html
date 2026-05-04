@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Manage Buildings - Admin</title>
+</head>
+<body class="admin-theme">
+    <nav class="admin-nav">
+        <a href="/dashboard">🏠 Resident View</a>
+        <a href="/admin_dashboard">📊 Dashboard</a>
+        <a href="/admin_login_history">🔐 Login History</a>
+        <a href="/admin_notices">📢 Notices</a>
+        <a href="/admin_bills">💰 Bills</a>
+        <a href="/admin_complaints">📝 Complaints</a>
+        <a href="/admin_buildings" class="active">🏢 Buildings</a>
+        <a href="/admin_residents">👥 Residents</a>
+        <a href="/logout" class="btn-premium" style="color: red;">Logout</a>
+    </nav>
+
+    <div class="page-hero">
+        <h1>Building Management</h1>
+        <p>Create new buildings, change floor counts, and remove outdated listings.</p>
+    </div>
+
+    <div class="page-main" style="max-width: 1100px;">
+        <div class="building-card">
+            <h2>Add New Building</h2>
+            <form action="/admin_buildings" method="POST" style="display: grid; gap: 18px;">
+                <input type="hidden" name="action" value="add">
+                <input type="text" name="name" placeholder="Building Name" required class="input-card">
+                <input type="number" name="floors" placeholder="Number of Floors" required class="input-card" min="1">
+                <input type="number" name="flats" placeholder="Total Flats" required class="input-card" min="1">
+                <input type="text" name="manager" placeholder="Building Manager Contact" required class="input-card">
+                <textarea name="description" placeholder="Building Description" rows="3" class="input-card"></textarea>
+                <button type="submit" class="btn-premium" style="width: 220px;">Add Building</button>
+            </form>
+        </div>
+
+        <div class="building-card">
+            <h2>Active Buildings ({{ buildings|length }})</h2>
+            <div style="display: grid; gap: 18px; margin-top: 20px;">
+                {% for building in buildings %}
+                <div class="admin-card-grid">
+                    <div>
+                        <h3>{{ building.name }}</h3>
+                        <p>{{ building.description }}</p>
+                        <p><strong>Floors:</strong> {{ building.floors }} | <strong>Flats:</strong> {{ building.flats }} | <strong>Occupancy:</strong> {{ building.occupancy }}</p>
+                        <p><strong>Manager:</strong> {{ building.manager }}</p>
+                    </div>
+                    <div style="display: grid; gap: 10px; align-items: end;">
+                        <form action="/admin_buildings" method="POST" style="display: grid; gap: 12px;">
+                            <input type="hidden" name="action" value="update_floors">
+                            <input type="hidden" name="name" value="{{ building.name }}">
+                            <label style="font-size: 0.95rem; color: #cad2ff;">Update Floors</label>
+                            <input type="number" name="floors" value="{{ building.floors }}" min="1" class="input-card">
+                            <button type="submit" class="btn-premium" style="width: 180px;">Save Floors</button>
+                        </form>
+                        <form action="/admin_buildings" method="POST" style="display: inline;">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="name" value="{{ building.name }}">
+                            <button type="submit" class="btn-premium" style="width: 180px; background: #e74c3c;">Remove Building</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

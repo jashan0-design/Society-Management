@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Society Dashboard - Elite Society Hub</title>
+    <style>
+        .dashboard-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin: 30px auto; max-width: 1200px; }
+        .stat-card { background: rgba(255,255,255,0.9); padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .stat-number { font-size: 2.5rem; color: #e74c3c; font-weight: bold; }
+        .stat-label { color: #666; margin-top: 10px; font-size: 0.95rem; }
+        .quick-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin: 30px auto; max-width: 1200px; }
+        .quick-link-card { background: rgba(255,255,255,0.9); padding: 20px; border-radius: 12px; text-align: center; transition: 0.3s; }
+        .quick-link-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .content-section { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .section-title { font-size: 1.8rem; color: #2c3e50; margin-bottom: 20px; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="/dashboard" class="active">🏠 Dashboard</a>
+        <a href="/bills">💰 Bills</a>
+        <a href="/notices">📢 Notices</a>
+        <a href="/residents">🏢 Residents</a>
+        <a href="/complaints">📝 Complaints</a>
+        <a href="/profile">👤 Profile</a>
+        <a href="/logout" class="btn-premium" style="color: red;">Logout</a>
+    </nav>
+
+    <div style="text-align: center; margin-top: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; border-radius: 15px; margin: 20px;">
+        <h1 style="font-size: 3rem; margin: 0; color: white;">👋 Welcome, Admin!</h1>
+        <p style="font-size: 1.1rem; margin: 10px 0 0 0;">Elite Society Hub - Resident Management System</p>
+        <p style="margin: 15px 0 0 0; opacity: 0.9;">Last login: 2 May 2026 | 10:30 AM</p>
+    </div>
+
+    <!-- Statistics Dashboard -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <div class="stat-number">{{ statistics.total_residents }}</div>
+            <div class="stat-label">Total Residents</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ statistics.pending_complaints }}</div>
+            <div class="stat-label">Pending Complaints</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">₹2.4L</div>
+            <div class="stat-label">Total Pending Bills</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">{{ statistics.active_notices }}</div>
+            <div class="stat-label">Active Notices</div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="content-section">
+        <h2 class="section-title">⚡ Quick Actions</h2>
+        <div class="quick-links">
+            <div class="quick-link-card">
+                <div style="font-size: 2.5rem; margin-bottom: 10px;">💳</div>
+                <a href="/bills">Bills</a>
+                <p style="color: #666; font-size: 0.9rem; margin-top: 8px;">Check water & electricity bills</p>
+            </div>
+            <div class="quick-link-card">
+                <div style="font-size: 2.5rem; margin-bottom: 10px;">🎫</div>
+                <a href="/complaints">Complaints</a>
+                <p style="color: #666; font-size: 0.9rem; margin-top: 8px;">Report issues to management</p>
+            </div>
+            <div class="quick-link-card">
+                <div style="font-size: 2.5rem; margin-bottom: 10px;">📋</div>
+                <a href="/notices">Notices</a>
+                <p style="color: #666; font-size: 0.9rem; margin-top: 8px;">Important announcements</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="content-section">
+        <h2 class="section-title">📊 Your Recent Activity</h2>
+        <div class="building-card" style="margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="margin: 0; color: #2c3e50;">Electricity Bill Paid</h4>
+                    <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">April 2026 - ₹3,200</p>
+                </div>
+                <span style="background: #27ae60; color: white; padding: 5px 15px; border-radius: 15px; font-size: 0.85rem;">✓ Paid</span>
+            </div>
+        </div>
+        <div class="building-card" style="margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="margin: 0; color: #2c3e50;">Complaint Filed - SOC-ABCD12</h4>
+                    <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">Lift maintenance in Wing A</p>
+                </div>
+                <span style="background: #3498db; color: white; padding: 5px 15px; border-radius: 15px; font-size: 0.85rem;">In Progress</span>
+            </div>
+        </div>
+        <div class="building-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="margin: 0; color: #2c3e50;">Society Maintenance Notice</h4>
+                    <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">Weekend maintenance scheduled - 8 May 2026</p>
+                </div>
+                <span style="background: #f39c12; color: white; padding: 5px 15px; border-radius: 15px; font-size: 0.85rem;">📢 New</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="society-container">
+        {% for wing in wings %}
+        <div class="building-card">
+            <div style="font-size: 40px; margin-bottom: 10px;">🏢</div>
+            <h2 style="margin: 0; color: #3498db;">{{ wing.name }}</h2>
+            <p style="color: #7f8c8d;">{{ wing.description }}</p>
+            <p style="margin: 10px 0 15px 0; color: #666;">{{ wing.units }} apartments</p>
+            <a href="/wing/{{ wing.slug }}" class="button-link">View Wing</a>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

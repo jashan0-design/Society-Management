@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>{{ wing.name }} - Elite Society Hub</title>
+    <style>
+        .wing-card { max-width: 900px; margin: 50px auto; background: rgba(255,255,255,0.95); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+        .wing-card h1 { margin-top: 0; color: #2c3e50; }
+        .wing-card p { color: #555; line-height: 1.8; }
+        .wing-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; }
+        .wing-detail { background: #f8f9fa; padding: 20px; border-radius: 15px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/dashboard">🏠 Dashboard</a>
+        <a href="/bills">💰 Bills</a>
+        <a href="/notices">📢 Notices</a>
+        <a href="/residents">🏢 Residents</a>
+        <a href="/complaints">📝 Complaints</a>
+        <a href="/profile">👤 Profile</a>
+        <a href="/logout" class="btn-premium" style="color: red;">Logout</a>
+    </nav>
+
+    <div class="wing-card">
+        <h1>{{ wing.name }}</h1>
+        <p>{{ wing.description }}</p>
+        <div class="wing-details">
+            <div class="wing-detail">
+                <h3 style="margin: 0; color: #2c3e50;">Total Apartments</h3>
+                <p style="margin: 10px 0 0 0; font-size: 1.5rem; font-weight: bold;">{{ wing.units }}</p>
+            </div>
+            <div class="wing-detail">
+                <h3 style="margin: 0; color: #2c3e50;">Nearest Amenity</h3>
+                <p style="margin: 10px 0 0 0; color: #555;">Community garden and children’s play area.</p>
+            </div>
+            <div class="wing-detail">
+                <h3 style="margin: 0; color: #2c3e50;">Safety Features</h3>
+                <p style="margin: 10px 0 0 0; color: #555;">24/7 security, CCTV coverage, and fire alarm systems.</p>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; display: flex; gap: 15px; flex-wrap: wrap;">
+            <a href="/dashboard" class="button-link" style="background: #3498db; color: white;">Back to Dashboard</a>
+            <a href="/profile" class="button-link" style="background: #27ae60; color: white;">View My Profile</a>
+        </div>
+    </div>
+</body>
+</html>
