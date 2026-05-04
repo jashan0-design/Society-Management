@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import string
 from datetime import datetime
@@ -71,6 +72,20 @@ class Complaint(db.Model):
     status = db.Column(db.String(20), default='Filed')
     date = db.Column(db.String(30))
 
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(120), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password, method='pbkdf2:sha256')
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 # Global lists will be replaced by queries
 
 # Helper functions
@@ -79,6 +94,19 @@ def generate_complaint_id():
 
 def seed_data():
     """Seed sample data if not exists"""
+    # Create initial admin user if not exists
+    if not User.query.filter_by(username='jashan').first():
+        admin_user = User(username='jashan', email='admin@society.com')
+        admin_user.set_password('1234')
+        admin_user.is_admin = True
+        db.session.add(admin_user)
+    
+    # Create demo resident user
+    if not User.query.filter_by(username='demo').first():
+        demo_user = User(username='demo', email='demo@society.com')
+        demo_user.set_password('1234')
+        db.session.add(demo_user)
+    
     if Resident.query.first() is None:
         residents_data = [
             Resident(id="R001", name="Aman Sharma", building="Building A", flat="A-101", contact="+91-98765 43201"),
@@ -134,33 +162,24 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         user_type = request.form.get('user_type')
-        if user_type == 'resident' and username == 'admin' and password == '1234':
+        user = User.query.filter_by(username=username).first()
+        if user and user.check_password(password):
             session['logged_in'] = True
-            session['username'] = username
-            session['user_type'] = 'resident'
-            record = LoginRecord(username=username, user_type='resident')
+            session['user_id'] = user.id
+            session['username'] = user.username
+            session['user_type'] = 'admin' if user.is_admin else 'resident'
+            record = LoginRecord(username=username, user_type=session['user_type'])
             db.session.add(record)
             db.session.commit()
             session['login_record_id'] = record.id
-            flash('Resident login successful!', 'success')
+            flash(f'{session["user_type"].title()} login successful!', 'success')
+            if user.is_admin:
+                return redirect(url_for('admin_dashboard'))
             return redirect(url_for('dashboard'))
-        elif user_type == 'admin' and username == 'jashan' and password == '1234':
-            session['logged_in'] = True
-            session['username'] = username
-            session['user_type'] = 'admin'
-            record = LoginRecord(username=username, user_type='admin')
-            db.session.add(record)
-            db.session.commit()
-            session['login_record_id'] = record.id
-            flash('Admin login successful!', 'success')
-            return redirect(url_for('admin_dashboard'))
-        else:
-            flash('Invalid credentials.', 'error')
+        flash('Invalid credentials.', 'error')
     return render_template('login.html')
 
-@app.route('/admin_login')
-def admin_login_redirect():
-    return render_template('admin_login.html')
+# Keep hardcoded fallback removed; DB handles all
 
 
 @app.route('/logout')
@@ -469,9 +488,14 @@ def register():
         username = request.form.get('username')
         password = request.form.get('password')
         if email and username and password:
-            # Simple check (in prod, hash password, email verification)
-            session['new_user'] = username
-            flash(f'Account created for {username}! Use your credentials to login.', 'success')
+            if User.query.filter_by(username=username).first() or User.query.filter_by(email=email).first():
+                flash('Username or email already exists.', 'error')
+                return render_template('register.html')
+            new_user = User(username=username, email=email)
+            new_user.set_password(password)
+            db.session.add(new_user)
+            db.session.commit()
+            flash(f'Account created for {username}! Login with your credentials.', 'success')
             return redirect(url_for('login'))
         flash('Please fill all fields.', 'error')
     return render_template('register.html')
@@ -513,6 +537,7 @@ def profile():
 with app.app_context():
     db.create_all()
     seed_data()
+    db.session.commit()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5002)
