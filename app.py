@@ -164,13 +164,8 @@ def login():
 
 @app.route('/logout')
 def logout():
-    login_record_id = session.get('login_record_id')
-    if login_record_id:
-        record = LoginRecord.query.get(login_record_id)
-        if record and record.logout_time is None:
-            record.logout_time = datetime.utcnow()
-            db.session.commit()
     session.clear()
+    flash('Logged out successfully!', 'success')
     return redirect(url_for('login'))
 
 @app.route('/dashboard')
