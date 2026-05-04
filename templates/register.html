@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Create Account - Elite Society</title>
+</head>
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    
+    <div class="building-card" style="width: 450px; padding: 40px; background: rgba(255,255,255,0.95);">
+        <div style="font-size: 50px; margin-bottom: 10px; color: #3498db;">👤</div>
+        <h2 style="margin-bottom: 5px; color: #2c3e50;">Create Resident Account</h2>
+        <p style="color: #7f8c8d; margin-bottom: 30px; font-size: 0.95rem;">Sign up for society access</p>
+        
+        <form action="/register" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+            <div>
+                <input type="email" name="email" placeholder="Email Address" required autocomplete="email" 
+                       style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; background: #fff; font-size: 1rem;">
+            </div>
+            <div>
+                <input type="text" name="username" placeholder="Username" required autocomplete="username" 
+                       style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; background: #fff; font-size: 1rem;">
+            </div>
+            <div>
+                <input type="password" name="password" placeholder="Password" required autocomplete="new-password" 
+                       style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; background: #fff; font-size: 1rem;">
+            </div>
+            <button type="submit" class="btn-premium" style="width: 100%; background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; font-size: 1.1rem; padding: 14px;">
+                Create Account
+            </button>
+        </form>
+
+        <p style="margin-top: 25px; text-align: center;">
+            <a href="/login" style="color: #3498db; text-decoration: none; font-weight: 600;">← Back to Login</a>
+        </p>
+    </div>
+
+</body>
+</html>

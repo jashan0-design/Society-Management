@@ -28,7 +28,7 @@
     </nav>
 
     <div style="text-align: center; margin-top: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; border-radius: 15px; margin: 20px;">
-        <h1 style="font-size: 3rem; margin: 0; color: white;">👋 Welcome, Admin!</h1>
+<h1 style="font-size: 3rem; margin: 0; color: white;">👋 Welcome, {{ session.username|default('Resident') }}!</h1>
         <p style="font-size: 1.1rem; margin: 10px 0 0 0;">Elite Society Hub - Resident Management System</p>
         <p style="margin: 15px 0 0 0; opacity: 0.9;">Last login: 2 May 2026 | 10:30 AM</p>
     </div>

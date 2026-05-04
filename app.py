@@ -133,9 +133,7 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-
         user_type = request.form.get('user_type')
-        # Resident: admin/1234
         if user_type == 'resident' and username == 'admin' and password == '1234':
             session['logged_in'] = True
             session['username'] = username
@@ -146,7 +144,6 @@ def login():
             session['login_record_id'] = record.id
             flash('Resident login successful!', 'success')
             return redirect(url_for('dashboard'))
-        # Admin: jashan/1234
         elif user_type == 'admin' and username == 'jashan' and password == '1234':
             session['logged_in'] = True
             session['username'] = username
@@ -158,9 +155,13 @@ def login():
             flash('Admin login successful!', 'success')
             return redirect(url_for('admin_dashboard'))
         else:
-            flash('Invalid credentials for the selected login type.', 'error')
-
+            flash('Invalid credentials.', 'error')
     return render_template('login.html')
+
+@app.route('/admin_login')
+def admin_login_redirect():
+    return render_template('admin_login.html')
+
 
 @app.route('/logout')
 def logout():
@@ -460,6 +461,20 @@ def reset_password():
         return redirect(url_for('login'))
 
     return render_template('reset.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if email and username and password:
+            # Simple check (in prod, hash password, email verification)
+            session['new_user'] = username
+            flash(f'Account created for {username}! Use your credentials to login.', 'success')
+            return redirect(url_for('login'))
+        flash('Please fill all fields.', 'error')
+    return render_template('register.html')
 
 @app.route('/building/<building_name>')
 def building_detail(building_name):
