@@ -68,9 +68,13 @@ class Bill(db.Model):
 
 class Complaint(db.Model):
     id = db.Column(db.String(20), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    category = db.Column(db.String(50), default='General')
+    priority = db.Column(db.String(20), default='Medium')
     description = db.Column(db.Text, nullable=False)
     status = db.Column(db.String(20), default='Filed')
     date = db.Column(db.String(30))
+    user = db.relationship('User', backref='complaints')
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -176,10 +180,13 @@ def login():
             if user.is_admin:
                 return redirect(url_for('admin_dashboard'))
             return redirect(url_for('dashboard'))
-        flash('Invalid credentials.', 'error')
+        else:
+            flash('Invalid credentials. Try demo/1234 (resident) or jashan/1234 (admin).', 'error')
     return render_template('login.html')
 
-# Keep hardcoded fallback removed; DB handles all
+@app.route('/admin_login')
+def admin_login():
+    return render_template('admin_login.html')
 
 
 @app.route('/logout')
@@ -392,32 +399,59 @@ def action_page(action_name):
 
 @app.route('/complaints', methods=['GET', 'POST'])
 def complaints_page():
-    if 'logged_in' not in session:
+    if 'logged_in' not in session or 'user_id' not in session:
         return redirect(url_for('login'))
 
     ticket = None
     status_message = None
+    my_complaints = []
+    categories = ['General', 'Lift/Elevator', 'Water Supply', 'Electricity', 'Security', 'Cleaning', 'Parking', 'Maintenance', 'Other']
+    stats = {'total': 0, 'open': 0, 'resolved': 0}
 
+    # Always calculate fresh
+    my_complaints = Complaint.query.filter_by(user_id=session['user_id']).order_by(Complaint.date.desc()).all()
+    
     if request.method == 'POST':
-        if 'description' in request.form:
-            # File new complaint
+        action = request.form.get('action', '')
+        if action == 'file':
             description = request.form.get('description')
+            category = request.form.get('category', 'General')
+            priority = request.form.get('priority', 'Medium')
             if description:
                 complaint_id = generate_complaint_id()
-                new_complaint = Complaint(id=complaint_id, description=description, status='Filed', date=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                new_complaint = Complaint(
+                    id=complaint_id,
+                    user_id=session['user_id'],
+                    category=category,
+                    priority=priority,
+                    description=description,
+                    status='Filed',
+                    date=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                )
                 db.session.add(new_complaint)
                 db.session.commit()
                 ticket = complaint_id
-        elif 'track_id' in request.form:
-            # Track complaint
+                flash('Complaint filed successfully! Track ID: ' + complaint_id, 'success')
+        elif action == 'track':
             tracking_id = request.form.get('track_id')
             complaint = Complaint.query.get(tracking_id)
             if complaint:
-                status_message = f"Status: {complaint.status} - {complaint.description}"
+                status_message = f"Status: {complaint.status} | Category: {complaint.category} | Priority: {complaint.priority} | {complaint.description[:100]}..."
             else:
-                status_message = "Complaint not found"
+                status_message = "Complaint not found."
 
-    return render_template('complaints.html', ticket=ticket, status_message=status_message)
+    stats = {
+        'total': len(my_complaints),
+        'open': len([c for c in my_complaints if c.status in ['Filed', 'In Progress']]),
+        'resolved': len([c for c in my_complaints if c.status == 'Resolved'])
+    }
+
+    return render_template('complaints.html', 
+                         ticket=ticket, 
+                         status_message=status_message,
+                         my_complaints=my_complaints,
+                         categories=categories,
+                         stats=stats)
 
 @app.route('/bills')
 def bills_page():
