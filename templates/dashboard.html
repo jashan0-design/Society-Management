@@ -91,7 +91,9 @@
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <h4 style="margin: 0; color: #2c3e50;">Complaint Filed - SOC-ABCD12</h4>
-                    <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">Lift maintenance in Wing A</p>
+
+                    <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">Lift maintenance in Building A</p>
+
                 </div>
                 <span style="background: #3498db; color: white; padding: 5px 15px; border-radius: 15px; font-size: 0.85rem;">In Progress</span>
             </div>
@@ -107,17 +109,36 @@
         </div>
     </div>
 
-    <div class="society-container">
-        {% for wing in wings %}
-        <div class="building-card">
-            <div style="font-size: 40px; margin-bottom: 10px;">🏢</div>
-            <h2 style="margin: 0; color: #3498db;">{{ wing.name }}</h2>
-            <p style="color: #7f8c8d;">{{ wing.description }}</p>
-            <p style="margin: 10px 0 15px 0; color: #666;">{{ wing.units }} apartments</p>
-            <a href="/wing/{{ wing.slug }}" class="button-link">View Wing</a>
+
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; max-width: 1400px; margin: 0 auto; padding: 0 20px;">
+            {% for building in buildings %}
+            <a href="/building/{{ building.name.replace(' ', '-') }}" style="text-decoration: none;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 30px; border-radius: 25px; text-align: center; box-shadow: 0 25px 50px rgba(102, 126, 234, 0.4); transition: all 0.4s ease; position: relative; overflow: hidden;">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">🏢</div>
+                    <h2 style="margin: 0 0 15px 0; font-size: 1.8rem;">{{ building.name }}</h2>
+                    <p style="margin: 0 0 25px 0; opacity: 0.95; font-size: 1.1rem;">{{ building.description }}</p>
+                    <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 25px;">
+                        <div>
+                            <div style="font-size: 2.2rem; font-weight: bold;">{{ building.floors }}</div>
+                            <div style="opacity: 0.8; font-size: 0.9rem;">Floors</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2.2rem; font-weight: bold;">{{ building.flats }}</div>
+                            <div style="opacity: 0.8; font-size: 0.9rem;">Flats</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2.2rem; font-weight: bold;">{{ building.occupancy }}</div>
+                            <div style="opacity: 0.8; font-size: 0.9rem;">Occupied</div>
+                        </div>
+                    </div>
+                    <div style="position: absolute; top: 25px; right: 25px; background: rgba(255,255,255,0.25); padding: 8px 16px; border-radius: 25px; font-weight: 600;">Explore →</div>
+                </div>
+            </a>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
+
+
 
     <!-- Highlights Section -->
     <div class="content-section">

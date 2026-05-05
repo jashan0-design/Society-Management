@@ -195,6 +195,7 @@ def logout():
     flash('Logged out successfully!', 'success')
     return redirect(url_for('login'))
 
+
 @app.route('/dashboard')
 def dashboard():
     if 'logged_in' not in session:
@@ -207,8 +208,9 @@ def dashboard():
         'pending_complaints': Complaint.query.filter(Complaint.status != 'Resolved').count(),
         'upcoming_events': 3
     }
-    wings = Wing.query.all()
-    return render_template('dashboard.html', wings=wings, statistics=statistics)
+    buildings = Building.query.all()[:4]  # Sample buildings
+    return render_template('dashboard.html', buildings=buildings, statistics=statistics)
+
 
 @app.route('/admin_dashboard')
 def admin_dashboard():
@@ -558,6 +560,58 @@ def building_detail(building_name):
     ]
     
     return render_template('building_detail.html', building=building, floor_plans=floor_plans, sample_residents=sample_residents, maintenance_tickets=maintenance_tickets)
+
+@app.route('/floor/<building_slug>/<floor_num>')
+def floor_detail(building_slug, floor_num):
+    if 'logged_in' not in session:
+        return redirect(url_for('login'))
+    
+    building_name = building_slug.replace('-', ' ')
+    building = Building.query.get(building_name)
+    if not building:
+        flash('Building not found.', 'error')
+        return redirect(url_for('residents'))
+    
+    floor_number = int(floor_num)
+    total_flats = building.flats // building.floors if building.floors else 6
+    building_residents = Resident.query.filter_by(building=building.name).all()
+    
+    # Generate flats for this floor (e.g., A101-A124)
+    flats_per_floor = total_flats
+    floor_flats = []
+
+    floor_residents = [r for r in building_residents if r.flat and r.flat.startswith('A') and int(r.flat.split('-')[1][:2]) == floor_number]
+    
+    for i in range(1, flats_per_floor + 1):
+        flat_num = f"A-{floor_number:02d}{i:02d}"
+        resident = next((r for r in floor_residents if r.flat == flat_num), None)
+        is_occupied = random.choice([True, False]) if not resident else True  # Match plan.vacant roughly
+        family_size = random.randint(2, 5) if is_occupied else 0
+        flat = {
+            'number': flat_num,
+            'resident': resident.name if resident else f"Family {random.randint(1,20)}" if is_occupied else None,
+            'family_size': family_size,
+            'contact': resident.contact if resident else "+91-98765-4321" if is_occupied else None,
+            'description': f"{family_size} members" if family_size else "Vacant"
+        }
+        floor_flats.append(flat)
+
+    
+    total_flats_count = len(floor_flats)
+    occupied_count = len([f for f in floor_flats if f['resident']])
+    vacant_count = total_flats_count - occupied_count
+    total_members = sum(f['family_size'] for f in floor_flats)
+    
+    return render_template('floor_detail.html', 
+                         building_name=building.name, 
+                         building_slug=building_slug, 
+                         floor_number=floor_number,
+                         flats=floor_flats,
+                         total_flats=total_flats_count,
+                         occupied_count=occupied_count,
+                         vacant_count=vacant_count,
+                         total_members=total_members)
+
 
 def get_sample_residents(num=10):
     return [{"flat": f"A-{random.randint(101,125):03d}", "name": f"John Doe {random.randint(1,99)}", "family_size": random.randint(2,5)} for _ in range(num)]
